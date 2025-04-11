@@ -24,8 +24,8 @@ def create_category(
 
 @router.put("/{category_id}", response_model=schemas.CategoryOut)
 def update_category(
+    category_in: schemas.CategoryUpdate,
     category_id: int = Path(..., description="ID категорії"),
-    category_in: schemas.CategoryUpdate, 
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

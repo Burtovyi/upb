@@ -23,8 +23,8 @@ def create_content_type(
 
 @router.put("/{content_type_id}", response_model=schemas.ContentTypeOut)
 def update_content_type(
-    content_type_id: int = Path(..., description="ID типу контенту"),
     content_type_in: schemas.ContentTypeUpdate, 
+    content_type_id: int = Path(..., description="ID типу контенту"),
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):

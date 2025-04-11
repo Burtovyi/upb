@@ -19,8 +19,8 @@ def read_comments_for_article(
 
 @router.post("/article/{article_id}", response_model=schemas.CommentOut)
 def create_comment(
-    article_id: int = Path(..., description="ID статті"),
     comment_in: schemas.CommentCreate, 
+    article_id: int = Path(..., description="ID статті"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -28,8 +28,8 @@ def create_comment(
 
 @router.put("/{comment_id}", response_model=schemas.CommentOut)
 def update_comment(
-    comment_id: int = Path(..., description="ID коментаря"),
     comment_in: schemas.CommentUpdate, 
+    comment_id: int = Path(..., description="ID коментаря"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

@@ -28,14 +28,15 @@ def create_author(author_in: schemas.AuthorCreate, db: Session = Depends(get_db)
 
 @router.put("/{author_id}", response_model=schemas.AuthorOut)
 def update_author(
+    author_in: schemas.AuthorUpdate,
     author_id: int = Path(..., description="ID автора"),
-    author_in: schemas.AuthorUpdate, 
     db: Session = Depends(get_db)
 ):
     author = crud.get_author(db, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Автор не знайдений")
     return crud.update_author(db, author, author_in)
+
 
 @router.delete("/{author_id}", status_code=204)
 def delete_author(
