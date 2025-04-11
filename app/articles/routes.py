@@ -1,66 +1,52 @@
 # app/articles/routes.py
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List
-from app.articles import schemas, crud
+from app.articles import schemas, crud  # імпортуємо схеми і CRUD функції для статей
 from app.db.database import get_db
-from app.auth.dependencies import get_current_user
-from app.auth.models import User
 
 router = APIRouter()
 
 @router.get("/", response_model=List[schemas.ArticleOut])
-def read_articles(
-    skip: int = 0, 
-    limit: int = 10, 
-    status: str = Query("published", description="Фільтр за статусом (draft, moderation, published)"),
-    db: Session = Depends(get_db)
-):
-    articles = crud.get_articles(db, skip=skip, limit=limit, status=status)
-    return articles
+def read_articles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return crud.get_articles(db, skip=skip, limit=limit)
 
-@router.get("/{article_id}", response_model=schemas.ArticleDetail)
+@router.get("/{article_id}", response_model=schemas.ArticleOut)
 def read_article(
     article_id: int = Path(..., description="ID статті"),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     article = crud.get_article(db, article_id)
     if not article:
         raise HTTPException(status_code=404, detail="Статтю не знайдено")
-    # Додаткова перевірка: якщо стаття не опублікована, доступ дозволяється тільки автору/редактору/адміну
     return article
 
 @router.post("/", response_model=schemas.ArticleOut)
 def create_article(
-    article_in: schemas.ArticleCreate, 
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    article_in: schemas.ArticleCreate,
+    db: Session = Depends(get_db)
 ):
-    return crud.create_article(db, article_in, current_user)
+    return crud.create_article(db, article_in)
 
 @router.put("/{article_id}", response_model=schemas.ArticleOut)
 def update_article(
-    article_id: int,
-    article_in: schemas.ArticleUpdate, 
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    article_in: schemas.ArticleUpdate,
+    article_id: int = Path(..., description="ID статті"),
+    db: Session = Depends(get_db)
 ):
     article = crud.get_article(db, article_id)
     if not article:
         raise HTTPException(status_code=404, detail="Статтю не знайдено")
-    updated_article = crud.update_article(db, article, article_in, current_user)
-    return updated_article
+    return crud.update_article(db, article, article_in)
 
 @router.delete("/{article_id}", status_code=204)
 def delete_article(
-    article_id: int, 
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    article_id: int = Path(..., description="ID статті"),
+    db: Session = Depends(get_db)
 ):
     article = crud.get_article(db, article_id)
     if not article:
         raise HTTPException(status_code=404, detail="Статтю не знайдено")
-    crud.delete_article(db, article, current_user)
+    crud.delete_article(db, article)
     return

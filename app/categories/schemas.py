@@ -1,33 +1,21 @@
 # app/categories/schemas.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class CategoryBase(BaseModel):
-    name: str
-    slug: str
+    name: str = Field(..., max_length=100)
+    description: Optional[str] = None
 
 class CategoryCreate(CategoryBase):
-    """
-    Схема для створення нової категорії.
-    Поля: name та slug є обов'язковими.
-    """
     pass
 
 class CategoryUpdate(BaseModel):
-    """
-    Схема для оновлення даних категорії.
-    Усі поля опціональні, що дозволяє оновлювати лише ті дані, які передані.
-    """
-    name: Optional[str] = None
-    slug: Optional[str] = None
+    name: Optional[str] = Field(None, max_length=100)
+    description: Optional[str] = None
 
 class CategoryOut(CategoryBase):
-    """
-    Схема для відображення категорії клієнту.
-    Додається ідентифікатор категорії.
-    """
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

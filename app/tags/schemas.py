@@ -1,24 +1,16 @@
 # app/tags/schemas.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class TagBase(BaseModel):
-    name: str
+    name: str = Field(..., max_length=100)
 
 class TagCreate(TagBase):
-    """
-    Схема для створення нового тегу.
-    Використовує обов’язкове поле name, яке задає назву тегу.
-    """
     pass
 
 class TagOut(TagBase):
-    """
-    Схема для повернення даних тегу клієнту.
-    Додається ідентифікатор тегу.
-    """
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

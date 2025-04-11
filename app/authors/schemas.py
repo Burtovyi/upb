@@ -1,33 +1,21 @@
 # app/authors/schemas.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 class AuthorBase(BaseModel):
-    name: str
+    name: str = Field(..., max_length=100)
     bio: Optional[str] = None
 
 class AuthorCreate(AuthorBase):
-    """
-    Схема для створення нового автора.
-    Містить обов’язкове поле name та опціональне поле bio.
-    """
     pass
 
 class AuthorUpdate(BaseModel):
-    """
-    Схема для оновлення даних автора.
-    Усі поля опціональні, що дозволяє оновлювати лише необхідні дані.
-    """
-    name: Optional[str] = None
+    name: Optional[str] = Field(None, max_length=100)
     bio: Optional[str] = None
 
 class AuthorOut(AuthorBase):
-    """
-    Схема для відображення автора клієнту.
-    Включає ідентифікатор автора.
-    """
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

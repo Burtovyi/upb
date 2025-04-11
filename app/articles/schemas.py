@@ -1,50 +1,47 @@
 # app/articles/schemas.py
 
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
-from app.articles.models import ArticleStatusEnum
 
 class ArticleBase(BaseModel):
-    title: str
-    summary: Optional[str] = None
+    title: str = Field(..., max_length=200)
     content: str
-    category_id: int
-    content_type_id: int
-    # Список ідентифікаторів тегів для прив'язки до статті
-    tag_ids: Optional[List[int]] = []
+    view_count: int = 0
 
 class ArticleCreate(ArticleBase):
-    """
-    Схема для створення нової статті.
-    Передбачається, що статус статті автоматично встановлюється як "draft".
-    """
-    pass
+    author_id: int
+    category_id: int
+    content_type_id: int
+    tag_ids: Optional[List[int]] = None  # Список ID тегів, якщо потрібно
 
 class ArticleUpdate(BaseModel):
-    title: Optional[str] = None
-    summary: Optional[str] = None
+    title: Optional[str] = Field(None, max_length=200)
     content: Optional[str] = None
+    view_count: Optional[int] = None
+    published_at: Optional[datetime] = None
     category_id: Optional[int] = None
     content_type_id: Optional[int] = None
     tag_ids: Optional[List[int]] = None
-    status: Optional[ArticleStatusEnum] = None
 
-class ArticleOut(BaseModel):
+class ArticleOut(ArticleBase):
     id: int
-    title: str
-    summary: Optional[str]
-    content: str
-    status: ArticleStatusEnum
-    published_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
+    published_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Додаткова схема (наприклад, для детального відображення) може включати вкладені дані,
-# такі як інформація про автора, категорію, список тегів, медіа та коментарі.
-class ArticleDetail(ArticleOut):
-    # Наприклад, для тегів можна повернути список імен
-    tag_names: Optional[List[str]] = []
+# Схема для історії статті
+class ArticleHistoryOut(BaseModel):
+    id: int
+    article_id: int
+    version_num: int
+    title: Optional[str]
+    content: Optional[str]
+    edited_at: datetime
+    action: Optional[str]
+
+    class Config:
+        from_attributes = True

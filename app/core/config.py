@@ -1,28 +1,51 @@
 # app/core/config.py
 
-from pydantic.v1 import BaseSettings
+from pydantic_settings import BaseSettings
+from pydantic import Field
 from typing import List
+import os
 
 class Settings(BaseSettings):
     # Рядок підключення до бази даних PostgreSQL
-    DATABASE_URL: str = "postgresql://burtovyi:S845625s@localhost:5432/news_portal"
+    # Використовуємо Field для безпечного значення за замовчуванням
+    DATABASE_URL: str = Field(
+        default="postgresql://user:password@localhost:5432/news_portal",
+        description="PostgreSQL database connection URL"
+    )
     
-    # Секретний ключ для генерації та перевірки JWT
-    SECRET_KEY: str = "my_project_secret_key"
+    # Секретний ключ для JWT
+    # Рекомендується зберігати в змінній оточення
+    SECRET_KEY: str = Field(
+        default_factory=lambda: os.urandom(32).hex(),
+        description="Secret key for JWT signing"
+    )
     
-    # Алгоритм для шифрування JWT (наприклад, "HS256")
-    ALGORITHM: str = "HS256"
+    # Алгоритм для шифрування JWT
+    ALGORITHM: str = Field(
+        default="HS256",
+        description="JWT encryption algorithm"
+    )
     
     # Тривалість життя access-токена в хвилинах
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        default=60,
+        ge=1,
+        description="Access token expiration time in minutes"
+    )
     
-    # Дозволені домени для CORS. Використовуємо список рядків, що дозволяє вказувати як конкретні URL, так і ' * '
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000"]
+    # Дозволені домени для CORS
+    ALLOWED_ORIGINS: List[str] = Field(
+        default=["http://localhost:3000"],
+        description="List of allowed CORS origins"
+    )
 
-    class Config:
-        # Файл .env (розташований у корені проєкту) буде завантажений автоматично,
-        # що дозволить переписати значення за замовчуванням із змінних оточення.
-        env_file = ".env"
+    model_config = {
+        # Налаштування для завантаження з .env файлу
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        # Ігноруємо невизначені змінні
+        "extra": "ignore"
+    }
 
-# Єдиний екземпляр налаштувань, який можна імпортувати в усіх модулях
+# Єдиний екземпляр налаштувань
 settings = Settings()

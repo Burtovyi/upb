@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List
-from app.authors import schemas, crud
+from app.authors import schemas, crud  # імпортуємо схеми і CRUD функції для авторів
 from app.db.database import get_db
 
 router = APIRouter()
@@ -23,12 +23,15 @@ def read_author(
     return author
 
 @router.post("/", response_model=schemas.AuthorOut)
-def create_author(author_in: schemas.AuthorCreate, db: Session = Depends(get_db)):
+def create_author(
+    author_in: schemas.AuthorCreate, 
+    db: Session = Depends(get_db)
+):
     return crud.create_author(db, author_in)
 
 @router.put("/{author_id}", response_model=schemas.AuthorOut)
 def update_author(
-    author_in: schemas.AuthorUpdate,
+    author_in: schemas.AuthorUpdate, 
     author_id: int = Path(..., description="ID автора"),
     db: Session = Depends(get_db)
 ):
@@ -36,7 +39,6 @@ def update_author(
     if not author:
         raise HTTPException(status_code=404, detail="Автор не знайдений")
     return crud.update_author(db, author, author_in)
-
 
 @router.delete("/{author_id}", status_code=204)
 def delete_author(
