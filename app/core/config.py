@@ -1,51 +1,30 @@
 # app/core/config.py
 
 from pydantic_settings import BaseSettings
-from pydantic import Field
+from pydantic import Field, AnyHttpUrl
 from typing import List
-import os
 
 class Settings(BaseSettings):
-    # Рядок підключення до бази даних PostgreSQL
-    # Використовуємо Field для безпечного значення за замовчуванням
-    DATABASE_URL: str = Field(
-        default="postgresql://user:password@localhost:5432/news_portal",
-        description="PostgreSQL database connection URL"
-    )
+    # Рядок підключення до бази даних PostgreSQL (повинен бути заданий у .env)
+    DATABASE_URL: str = Field(..., description="PostgreSQL database connection URL")
     
-    # Секретний ключ для JWT
-    # Рекомендується зберігати в змінній оточення
-    SECRET_KEY: str = Field(
-        default_factory=lambda: os.urandom(32).hex(),
-        description="Secret key for JWT signing"
-    )
+    # Секретний ключ для генерації та перевірки JWT (повинен бути заданий у .env)
+    SECRET_KEY: str = Field(..., description="Secret key for JWT signing")
     
-    # Алгоритм для шифрування JWT
-    ALGORITHM: str = Field(
-        default="HS256",
-        description="JWT encryption algorithm"
-    )
+    # Алгоритм для шифрування JWT (повинен бути заданий у .env)
+    ALGORITHM: str = Field(..., description="JWT encryption algorithm")
     
-    # Тривалість життя access-токена в хвилинах
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
-        default=60,
-        ge=1,
-        description="Access token expiration time in minutes"
-    )
+    # Тривалість життя access-токена в хвилинах (повинен бути заданий у .env)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(..., description="Access token expiration time in minutes")
     
-    # Дозволені домени для CORS
-    ALLOWED_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000"],
-        description="List of allowed CORS origins"
-    )
+    # Дозволені домени для CORS (повинні бути задані у .env як комою розділений рядок, наприклад: http://localhost:3000,http://mydomain.com)
+    ALLOWED_ORIGINS: List[str] = Field(..., description="List of allowed CORS origins")
 
     model_config = {
-        # Налаштування для завантаження з .env файлу
-        "env_file": ".env",
-        "env_file_encoding": "utf-8",
-        # Ігноруємо невизначені змінні
-        "extra": "ignore"
+        "env_file": ".env",              # Файл оточення, звідки завантажуються налаштування
+        "env_file_encoding": "utf-8",      # Кодування файлу .env
+        "extra": "ignore",               # Ігнорувати додаткові змінні, яких не описано в моделі
     }
 
-# Єдиний екземпляр налаштувань
+# Єдиний екземпляр налаштувань, який використовується у всіх модулях проєкту
 settings = Settings()
