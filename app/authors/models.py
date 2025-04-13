@@ -1,14 +1,17 @@
-# app/authors/models.py
+from typing import List, Optional
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Text
 
-from sqlalchemy import Column, Integer, String, Text
-from sqlalchemy.orm import relationship
-from app.db.database import Base
+class Base(DeclarativeBase):
+    pass
 
 class Author(Base):
     __tablename__ = "authors"
-    id = Column(Integer, primary_key=True, autoincrement=True, name="author_id")
-    name = Column(String(100), nullable=False)
-    bio = Column(Text, nullable=True)
     
-    # Один автор може мати багато статей
-    articles = relationship("Article", back_populates="author", cascade="all, delete-orphan")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, name="author_id")
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    bio: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    articles: Mapped[List["Article"]] = relationship(
+        "Article", back_populates="author", cascade="all, delete-orphan"
+    )

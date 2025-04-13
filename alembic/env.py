@@ -36,6 +36,8 @@ import app.content_types.models
 # Встановлюємо target_metadata – це метадані всіх моделей
 target_metadata = Base.metadata
 
+print("DATABASE_URL:", settings.DATABASE_URL)
+
 # Оновлюємо значення URL підключення з налаштувань (DATABASE_URL)
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 

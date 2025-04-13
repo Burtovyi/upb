@@ -1,9 +1,7 @@
-# app/categories/routes.py
-
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List
-from app.categories import schemas, crud  # імпортуємо схеми і CRUD функції для категорій
+from app.categories import schemas, crud
 from app.db.database import get_db
 
 router = APIRouter()

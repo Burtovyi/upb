@@ -1,9 +1,7 @@
-# app/articles/routes.py
-
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List
-from app.articles import schemas, crud  # імпортуємо схеми і CRUD функції для статей
+from app.articles import schemas, crud
 from app.db.database import get_db
 
 router = APIRouter()

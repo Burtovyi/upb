@@ -1,5 +1,3 @@
-# app/tags/routes.py
-
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List
@@ -16,7 +14,7 @@ def read_tags(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=schemas.TagOut)
 def create_tag(
-    tag_in: schemas.TagCreate, 
+    tag_in: schemas.TagCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

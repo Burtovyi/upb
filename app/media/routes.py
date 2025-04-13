@@ -1,5 +1,3 @@
-# app/media/routes.py
-
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Path
 from sqlalchemy.orm import Session
 from app.media import schemas, crud

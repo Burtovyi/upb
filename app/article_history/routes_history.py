@@ -1,10 +1,8 @@
-# app/articles/routes_history.py
-
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import List
-from app.articles import article_history_schemas as schemas  # схеми історії
-from app.articles import crud_history as crud  # CRUD для історії статей
+from app.article_history import article_history_schemas as schemas
+from app.article_history import crud_history as crud
 from app.db.database import get_db
 
 router = APIRouter()

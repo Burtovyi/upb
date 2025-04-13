@@ -1,11 +1,9 @@
-# app/auth/routes.py
-
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.auth import schemas, crud, utils
 from app.db.database import get_db
-from app.auth.dependencies import get_current_user  # Приклад: функція, що декодує JWT і повертає користувача
+from app.auth.dependencies import get_current_user
 
 router = APIRouter()
 

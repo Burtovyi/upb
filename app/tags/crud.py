@@ -1,5 +1,3 @@
-# app/tags/crud.py
-
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.tags import models, schemas
