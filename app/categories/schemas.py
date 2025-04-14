@@ -38,11 +38,7 @@ class CategoryUpdate(BaseModel):
         return v.strip() if v else v
 
 class CategoryOut(CategoryBase):
-    """
-    Модель для виведення категорії.
-    Містить ID, час створення та успадковані поля від CategoryBase.
-    """
     id: int = Field(..., ge=1)
     created_at: datetime
-
+    created_by: int = Field(..., ge=1)
     model_config = ConfigDict(from_attributes=True)

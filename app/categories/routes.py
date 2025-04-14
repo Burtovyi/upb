@@ -30,7 +30,7 @@ def create_category(
     try:
         if current_user.role not in ("admin", "editor"):
             raise HTTPException(status_code=403, detail="Недостатньо прав для створення категорії")
-        return crud.create_category(db, category_in)
+        return crud.create_category(db, category_in, current_user)  # Додаємо current_user
     except SQLAlchemyError:
         raise HTTPException(status_code=500, detail="Помилка бази даних при створенні категорії")
 
