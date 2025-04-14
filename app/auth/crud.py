@@ -1,27 +1,30 @@
 from sqlalchemy.orm import Session
-from app.auth import models, schemas
-from app.auth.utils import get_password_hash, verify_password
+from app.auth import schemas, utils
+from app.authors import models  # модуль з Author
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
+    """Знайти користувача (Author) за email"""
+    return db.query(models.Author).filter(models.Author.email == email).first()
 
 def create_user(db: Session, user_in: schemas.UserCreate):
-    hashed_password = get_password_hash(user_in.password)
-    user = models.User(
+    """Створити нового користувача (Author) з роллю 'user' за замовчуванням"""
+    hashed_password = utils.get_password_hash(user_in.password)
+    author = models.Author(
         email=user_in.email,
-        username=user_in.username,
+        name=user_in.name,
         hashed_password=hashed_password,
-        is_active=True
+        is_active=True,
+        role="user"
     )
-    db.add(user)
+    db.add(author)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(author)
+    return author
 
 def authenticate_user(db: Session, email: str, password: str):
-    user = get_user_by_email(db, email)
-    if not user:
+    author = get_user_by_email(db, email)
+    if not author:
         return None
-    if not verify_password(password, user.hashed_password):
+    if not utils.verify_password(password, author.hashed_password):
         return None
-    return user
+    return author

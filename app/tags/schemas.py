@@ -1,13 +1,17 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Optional
 
 class TagBase(BaseModel):
-    name: str = Field(..., max_length=100)
+    name: str
 
 class TagCreate(TagBase):
     pass
+
+class TagUpdate(BaseModel):
+    name: Optional[str] = None
 
 class TagOut(TagBase):
     id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
