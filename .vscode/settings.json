@@ -1,0 +1,13 @@
+{
+  // Шлях до Python-інтерпретатора у твоєму venv
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  // Автоматично активувати середовище у вбудованому терміналі
+  "python.terminal.activateEnvironment": true,
+  // (Опціонально) якщо хочеш, щоб VS Code лінтував код через flake8 чи pylint:
+  // "python.linting.enabled": true,
+  // "python.linting.flake8Enabled": true,
+  // "python.linting.pylintEnabled": false,
+  // (Опціонально) автозбереження форматування через black чи isort
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black"
+}
